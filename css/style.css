@@ -661,6 +661,11 @@ body {
     animation: pulseBorder 2s ease-in-out infinite;
 }
 
+.opponent-slot.disconnected {
+    opacity: 0.7;
+    border-color: var(--accent-warning);
+}
+
 @keyframes pulseBorder {
     0%, 100% { box-shadow: 0 0 10px rgba(139, 92, 246, 0.2); }
     50% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.5); }
@@ -817,6 +822,25 @@ body {
 .turn-message.highlight {
     color: var(--accent-primary);
     animation: turnPulse 1.5s ease-in-out infinite;
+}
+
+.turn-timer {
+    min-width: 42px;
+    margin: 4px auto 0;
+    padding: 3px 9px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 999px;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-align: center;
+}
+
+.turn-timer.urgent {
+    color: #fff;
+    background: var(--uno-red);
+    border-color: var(--uno-red);
+    animation: turnPulse 0.7s ease-in-out infinite;
 }
 
 @keyframes turnPulse {
@@ -1000,6 +1024,22 @@ body {
 
 .hand-scroll .card:first-child {
     margin-left: 0;
+}
+
+@media (max-width: 600px) {
+    .hand-scroll {
+        justify-content: flex-start;
+        gap: 8px;
+        padding: 0 12px 4px;
+        scroll-snap-type: x proximity;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .hand-scroll .card,
+    .hand-scroll .card:first-child {
+        margin-left: 0;
+        scroll-snap-align: start;
+    }
 }
 
 .hand-scroll .card.playable {
@@ -1691,5 +1731,22 @@ body {
 
     .action-buttons {
         padding: 2px 16px;
+    }
+}
+
+/* Keep every card reachable on touch screens, including large hands. */
+@media (max-width: 600px) {
+    .hand-scroll {
+        justify-content: flex-start;
+        gap: 8px;
+        padding: 0 12px 4px;
+        scroll-snap-type: x proximity;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .hand-scroll .card,
+    .hand-scroll .card:first-child {
+        margin-left: 0;
+        scroll-snap-align: start;
     }
 }

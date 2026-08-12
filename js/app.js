@@ -21,6 +21,7 @@ class App {
         // Track players for lobby
         this._lobbyPlayers = [];
         this._roomRequestInFlight = false;
+        this._turnMonitor = setInterval(() => this._checkTurnTimer(), 1000);
 
         this._bindUICallbacks();
     }
@@ -203,6 +204,24 @@ class App {
         this._lobbyPlayers = [];
         this.ui.showScreen('home');
         this.ui.showToast('Left the room', 'info');
+    }
+
+    _checkTurnTimer() {
+        if (!this.isHost || this.game.gameStatus !== 'playing') return;
+
+        const result = this.game.handleTurnTimeout();
+        if (result) {
+            this.ui.showToast(`${result.playerId ? this.game.getPlayer(result.playerId)?.name || 'Player' : 'Player'} timed out`, 'warning');
+            this._announceAction(result);
+            this._broadcastGameState();
+            this._renderMyGameState();
+            if (result.action === 'win') this._handleGameEnd();
+            return;
+        }
+
+        // Keep the countdown synchronized for all clients between moves.
+        this._broadcastGameState();
+        this._renderMyGameState();
     }
 
     // ----------------------------------------------------------

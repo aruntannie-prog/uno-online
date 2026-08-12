@@ -37,6 +37,7 @@ class UIManager {
         this.colorDot = document.getElementById('color-dot');
         this.colorLabel = document.getElementById('color-label');
         this.turnMessage = document.getElementById('turn-message');
+        this.turnTimer = document.getElementById('turn-timer');
         this.handScroll = document.getElementById('hand-scroll');
         this.btnUno = document.getElementById('btn-uno');
         this.btnDraw = document.getElementById('btn-draw');
@@ -431,7 +432,8 @@ class UIManager {
 
             const name = document.createElement('div');
             name.className = 'opponent-name';
-            name.textContent = player.name;
+            name.textContent = player.isDisconnected ? `${player.name} (disconnected)` : player.name;
+            if (player.isDisconnected) slot.classList.add('disconnected');
 
             const cards = document.createElement('div');
             cards.className = 'opponent-cards';
@@ -492,8 +494,13 @@ class UIManager {
     _renderTurnMessage(state, myPlayerId) {
         if (state.gameStatus !== 'playing') {
             this.turnMessage.textContent = '';
+            this.turnTimer.classList.add('hidden');
             return;
         }
+
+        this.turnTimer.textContent = `${Math.max(0, state.turnTimeRemaining ?? 30)}s`;
+        this.turnTimer.classList.toggle('urgent', (state.turnTimeRemaining ?? 30) <= 10);
+        this.turnTimer.classList.remove('hidden');
 
         if (state.isYourTurn) {
             if (state.awaitingDrawnCardDecision) {
@@ -508,7 +515,8 @@ class UIManager {
             }
         } else {
             const currentPlayer = state.players.find(p => p.id === state.currentPlayerId);
-            this.turnMessage.textContent = `${currentPlayer?.name || 'Someone'}'s turn`;
+            const status = currentPlayer?.isDisconnected ? 'disconnected; bot is playing' : 'turn';
+            this.turnMessage.textContent = `${currentPlayer?.name || 'Someone'}'s ${status}`;
             this.turnMessage.className = 'turn-message';
         }
     }

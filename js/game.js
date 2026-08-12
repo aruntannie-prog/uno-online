@@ -31,6 +31,8 @@ class GameEngine {
 
         // Action log for animations
         this.lastAction = null;
+        this.turnDurationMs = 30000;
+        this.turnDeadline = null;
     }
 
     // ----------------------------------------------------------
@@ -223,6 +225,7 @@ class GameEngine {
         this.mustCallUno = {};
         this.unoCalled = {};
         this.lastAction = null;
+        this.turnDeadline = Date.now() + this.turnDurationMs;
 
         // Rebuild players with cleared hands
         this.players = playerData.map(p => ({
@@ -315,6 +318,9 @@ class GameEngine {
     _advanceTurn() {
         this.currentPlayerIndex = this._getNextPlayerIndex();
         this.awaitingDrawnCardDecision = false;
+        this.turnDeadline = this.gameStatus === 'playing'
+            ? Date.now() + this.turnDurationMs
+            : null;
 
         // Clear UNO window for the player whose turn just ended
         const prevIndex = this._getPrevPlayerIndex();
@@ -335,6 +341,29 @@ class GameEngine {
                 }
             }, 800);
         }
+    }
+
+    handleTurnTimeout() {
+        if (this.gameStatus !== 'playing' || !this.turnDeadline || Date.now() < this.turnDeadline) {
+            return null;
+        }
+
+        const player = this.getCurrentPlayer();
+        if (!player) return null;
+
+        if (this.pendingDrawFour) {
+            return this.acceptDrawFour(player.id);
+        }
+
+        if (this.awaitingDrawnCardDecision) {
+            return this.playDrawnCard(player.id, false);
+        }
+
+        const drawResult = this.drawCard(player.id);
+        if (drawResult.action === 'draw_can_play') {
+            return this.playDrawnCard(player.id, false);
+        }
+        return drawResult;
     }
 
     _getNextPlayerIndex() {
@@ -808,7 +837,9 @@ class GameEngine {
                 name: p.name,
                 cardCount: p.hand.length,
                 hand: p.id === playerId ? p.hand.map(c => cardToJSON(c)) : undefined,
-                score: p.score
+                score: p.score,
+                isBot: Boolean(p.isBot),
+                isDisconnected: Boolean(p.isDisconnected)
             })),
             topCard: this.getTopCard() ? cardToJSON(this.getTopCard()) : null,
             currentColor: this.currentColor,
@@ -821,6 +852,9 @@ class GameEngine {
             drawFourPlayerId: this.drawFourPlayerId,
             awaitingDrawnCardDecision: this.awaitingDrawnCardDecision && this.getCurrentPlayer()?.id === playerId,
             isYourTurn: this.getCurrentPlayer()?.id === playerId,
+            turnTimeRemaining: this.turnDeadline
+                ? Math.max(0, Math.ceil((this.turnDeadline - Date.now()) / 1000))
+                : 0,
             playableCardIndices: player ? this._getPlayableIndices(player) : [],
             mustCallUno: { ...this.mustCallUno },
             unoCalled: { ...this.unoCalled },
