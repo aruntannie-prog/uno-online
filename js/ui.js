@@ -112,9 +112,9 @@ class UIManager {
                 name = 'Player ' + Math.floor(100 + Math.random() * 900);
                 this.playerNameInput.value = name;
             }
-            if (!code || code.length < 4) {
+            if (!code || code.length < 3) {
                 this.roomCodeInput.focus();
-                this.showToast('Please enter a valid 6-letter room code', 'warning');
+                this.showToast('Please enter a valid 3-character room code', 'warning');
                 return;
             }
             if (this.onJoinRoom) this.onJoinRoom(name, code);

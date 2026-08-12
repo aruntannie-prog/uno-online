@@ -23,12 +23,12 @@ class NetworkManager {
     }
 
     /**
-     * Generate a 6-character room code (no ambiguous chars like 0/O, 1/I/L).
+     * Generate a 3-character room code (no ambiguous chars like 0/O, 1/I/L).
      */
     _generateRoomCode() {
-        const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+        const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ';
         let code = '';
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 3; i++) {
             code += chars[Math.floor(Math.random() * chars.length)];
         }
         return code;
@@ -114,7 +114,7 @@ class NetworkManager {
 
     /**
      * Join an existing room (client mode).
-     * @param {string} roomCode - 6-char room code
+     * @param {string} roomCode - 3-char room code
      * @param {string} playerName - Player's display name
      * @returns {Promise<{peerId: string}>}
      */

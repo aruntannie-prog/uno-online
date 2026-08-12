@@ -878,8 +878,8 @@ window.handleJoinRoom = function () {
         name = 'Player ' + Math.floor(100 + Math.random() * 900);
         if (nameInput) nameInput.value = name;
     }
-    if (!code || code.length < 4) {
-        if (window.app && window.app.ui) window.app.ui.showToast('Please enter a valid 6-letter room code', 'warning');
+    if (!code || code.length < 3) {
+        if (window.app && window.app.ui) window.app.ui.showToast('Please enter a valid 3-character room code', 'warning');
         return;
     }
     if (window.app) {
