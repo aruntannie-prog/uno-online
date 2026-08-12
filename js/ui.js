@@ -521,6 +521,14 @@ class UIManager {
         }
     }
 
+    updateTurnTimer(seconds) {
+        if (!this.turnTimer) return;
+        const value = Math.max(0, Number(seconds) || 0);
+        this.turnTimer.textContent = `${value}s`;
+        this.turnTimer.classList.toggle('urgent', value <= 10);
+        this.turnTimer.classList.toggle('hidden', value === 0);
+    }
+
     _renderActionButtons(state, myPlayerId) {
         const myPlayer = state.players.find(p => p.id === myPlayerId);
         const myHandSize = myPlayer?.hand ? myPlayer.hand.length : myPlayer?.cardCount || 0;

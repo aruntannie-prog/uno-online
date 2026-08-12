@@ -1042,6 +1042,30 @@ body {
     }
 }
 
+@media (min-width: 601px) {
+    .hand-scroll {
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .hand-scroll .card,
+    .hand-scroll .card:first-child {
+        margin-left: 0;
+    }
+}
+
+@media (min-width: 601px) {
+    .hand-scroll {
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .hand-scroll .card,
+    .hand-scroll .card:first-child {
+        margin-left: 0;
+    }
+}
+
 .hand-scroll .card.playable {
     transform: translateY(-6px);
     box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);

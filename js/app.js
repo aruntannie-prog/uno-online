@@ -219,9 +219,11 @@ class App {
             return;
         }
 
-        // Keep the countdown synchronized for all clients between moves.
-        this._broadcastGameState();
-        this._renderMyGameState();
+        // Update only the clock between moves. Re-rendering the board here causes
+        // cards to be recreated and animated every second.
+        const seconds = this.game.getStateForPlayer(this.myPlayerId).turnTimeRemaining;
+        this.network.broadcast({ type: 'TURN_TIMER', seconds });
+        this.ui.updateTurnTimer(seconds);
     }
 
     // ----------------------------------------------------------
@@ -372,6 +374,10 @@ class App {
 
             case 'GAME_STATE':
                 this._handleGameStateUpdate(data.state);
+                break;
+
+            case 'TURN_TIMER':
+                this.ui.updateTurnTimer(data.seconds);
                 break;
 
             case 'ACTION_TOAST':
