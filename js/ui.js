@@ -483,10 +483,6 @@ class UIManager {
                 cardEl.classList.remove('dimmed');
             }
 
-            // Deal animation for new cards
-            cardEl.style.animationDelay = `${index * 0.03}s`;
-            cardEl.classList.add('card-deal-anim');
-
             this.handScroll.appendChild(cardEl);
         });
     }
