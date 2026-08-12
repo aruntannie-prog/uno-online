@@ -568,6 +568,7 @@ body {
 #screen-game {
     justify-content: flex-start;
     padding: 0;
+    position: relative;
 }
 
 .game-header {
@@ -945,6 +946,27 @@ body {
     transform: scale(0.95);
 }
 
+/* Reactions live in a corner so they never change the board or hand alignment. */
+#screen-game .emoji-bar {
+    position: absolute;
+    top: 58px;
+    right: 10px;
+    z-index: 20;
+    display: grid;
+    grid-template-columns: repeat(5, 32px);
+    gap: 2px;
+    width: max-content;
+    max-width: none;
+    margin: 0;
+    padding: 4px;
+    border-radius: 12px;
+}
+
+#screen-game .emoji-btn {
+    padding: 4px;
+    font-size: 1.1rem;
+}
+
 /* Floating Emoji Animation */
 .floating-emoji {
     position: absolute;
@@ -1039,6 +1061,14 @@ body {
     .hand-scroll .card:first-child {
         margin-left: 0;
         scroll-snap-align: start;
+    }
+}
+
+@media (max-width: 600px) {
+    #screen-game .emoji-bar {
+        top: 54px;
+        right: 6px;
+        grid-template-columns: repeat(2, 30px);
     }
 }
 
