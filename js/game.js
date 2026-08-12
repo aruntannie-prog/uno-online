@@ -21,6 +21,7 @@ class GameEngine {
         // Special state tracking
         this.pendingDrawFour = false;
         this.drawFourPlayerId = null;
+        this.drawPenalty = 0;
         this._previousColor = null; // Color before Wild Draw Four was played (for challenge validation)
 
         this.awaitingDrawnCardDecision = false; // True when player drew a playable card
@@ -220,6 +221,7 @@ class GameEngine {
         this.winner = null;
         this.pendingDrawFour = false;
         this.drawFourPlayerId = null;
+        this.drawPenalty = 0;
         this._previousColor = null;
         this.awaitingDrawnCardDecision = false;
         this.mustCallUno = {};
@@ -416,11 +418,11 @@ class GameEngine {
         const player = this.getPlayer(playerId);
         if (!player) return false;
         if (this.getCurrentPlayer().id !== playerId) return false;
-        if (this.pendingDrawFour) return false;
+        if (cardIndex < 0 || cardIndex >= player.hand.length) return false;
+        if (this.pendingDrawFour && !this._isStackCard(player.hand[cardIndex])) return false;
+        if (this.drawPenalty > 0 && !this._isStackCard(player.hand[cardIndex])) return false;
         if (this.awaitingDrawnCardDecision) return false;
         if (this.gameStatus !== 'playing') return false;
-        if (cardIndex < 0 || cardIndex >= player.hand.length) return false;
-
         const card = player.hand[cardIndex];
         return canPlayCardOn(card, this.getTopCard(), this.currentColor);
     }
@@ -437,7 +439,10 @@ class GameEngine {
 
         if (!player) return { success: false, error: 'Player not found' };
         if (this.getCurrentPlayer().id !== playerId) return { success: false, error: 'Not your turn' };
-        if (this.pendingDrawFour && !this.awaitingDrawnCardDecision) return { success: false, error: 'Must respond to +4' };
+        if (cardIndex < 0 || cardIndex >= player.hand.length) return { success: false, error: 'Invalid card index' };
+        if ((this.pendingDrawFour || this.drawPenalty > 0) && !this._isStackCard(player.hand[cardIndex])) {
+            return { success: false, error: `Must play +2/+4 or draw ${this.drawPenalty || 4} cards` };
+        }
         if (this.gameStatus !== 'playing') return { success: false, error: 'Game not in progress' };
         if (cardIndex < 0 || cardIndex >= player.hand.length) return { success: false, error: 'Invalid card index' };
 
@@ -445,7 +450,8 @@ class GameEngine {
 
         // Validate the card can be played (skip validation if playing drawn card in awaitingDrawnCardDecision)
         if (!this.awaitingDrawnCardDecision) {
-            if (!canPlayCardOn(card, this.getTopCard(), this.currentColor)) {
+            const stackingDrawCard = this.drawPenalty > 0 && this._isStackCard(card);
+            if (!stackingDrawCard && !canPlayCardOn(card, this.getTopCard(), this.currentColor)) {
                 return { success: false, error: 'Card cannot be played' };
             }
         }
@@ -532,13 +538,14 @@ class GameEngine {
                 break;
 
             case CARD_TYPES.DRAW_TWO: {
-                this._advanceTurn(); // Move to target player
+                this.drawPenalty += 2;
+                this.pendingDrawFour = false;
+                this.drawFourPlayerId = null;
+                this._advanceTurn();
                 const targetPlayer = this.getCurrentPlayer();
-                const drawn = this._drawCards(targetPlayer, 2);
-                result.action = 'draw_two';
+                result.action = 'draw_two_stack';
                 result.targetPlayer = targetPlayer.id;
-                result.drawnCount = drawn.length;
-                this._advanceTurn(); // Skip the target player
+                result.penalty = this.drawPenalty;
                 break;
             }
 
@@ -548,12 +555,13 @@ class GameEngine {
                 break;
 
             case CARD_TYPES.WILD_DRAW_FOUR:
-                this._advanceTurn(); // Move to target player
-                this.pendingDrawFour = true;
-                this.drawFourPlayerId = playerId;
-                result.action = 'wild_draw_four';
+                this.drawPenalty += 4;
+                this.pendingDrawFour = false;
+                this.drawFourPlayerId = null;
+                this._advanceTurn();
+                result.action = 'wild_draw_four_stack';
                 result.targetPlayer = this.getCurrentPlayer().id;
-                // Don't advance — target player must accept or challenge
+                result.penalty = this.drawPenalty;
                 break;
         }
 
@@ -574,6 +582,17 @@ class GameEngine {
         if (this.pendingDrawFour) return { success: false, error: 'Must respond to +4 first' };
         if (this.awaitingDrawnCardDecision) return { success: false, error: 'Already drew a card' };
         if (this.gameStatus !== 'playing') return { success: false, error: 'Game not in progress' };
+
+        if (this.drawPenalty > 0) {
+            const penalty = this.drawPenalty;
+            const drawn = this._drawCards(player, penalty);
+            this.drawPenalty = 0;
+            player.hand = sortHand(player.hand);
+            this._advanceTurn();
+            const result = { success: true, action: 'draw_penalty', playerId, drawnCount: drawn.length, penalty };
+            this.lastAction = result;
+            return result;
+        }
 
         const drawn = this._drawCards(player, 1);
         if (drawn.length === 0) {
@@ -850,6 +869,7 @@ class GameEngine {
             winner: this.winner,
             pendingDrawFour: this.pendingDrawFour,
             drawFourPlayerId: this.drawFourPlayerId,
+            drawPenalty: this.drawPenalty,
             awaitingDrawnCardDecision: this.awaitingDrawnCardDecision && this.getCurrentPlayer()?.id === playerId,
             isYourTurn: this.getCurrentPlayer()?.id === playerId,
             turnTimeRemaining: this.turnDeadline
@@ -868,7 +888,6 @@ class GameEngine {
      */
     _getPlayableIndices(player) {
         if (this.getCurrentPlayer()?.id !== player.id) return [];
-        if (this.pendingDrawFour) return [];
         if (this.gameStatus !== 'playing') return [];
 
         if (this.awaitingDrawnCardDecision) {
@@ -878,11 +897,17 @@ class GameEngine {
 
         const indices = [];
         for (let i = 0; i < player.hand.length; i++) {
-            if (canPlayCardOn(player.hand[i], this.getTopCard(), this.currentColor)) {
+            if ((this.pendingDrawFour || this.drawPenalty > 0) && !this._isStackCard(player.hand[i])) continue;
+            const stackingDrawCard = this.drawPenalty > 0 && this._isStackCard(player.hand[i]);
+            if (stackingDrawCard || canPlayCardOn(player.hand[i], this.getTopCard(), this.currentColor)) {
                 indices.push(i);
             }
         }
         return indices;
+    }
+
+    _isStackCard(card) {
+        return card && (card.type === CARD_TYPES.DRAW_TWO || card.type === CARD_TYPES.WILD_DRAW_FOUR);
     }
 
     _getScoreboard() {

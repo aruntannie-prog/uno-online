@@ -679,12 +679,24 @@ class App {
                 message = `${getPlayerName(result.targetPlayer)} draws 2 cards!`;
                 toastType = 'warning';
                 break;
+            case 'draw_two_stack':
+                message = `${getPlayerName(result.playerId)} stacked +2. Penalty is now ${result.penalty} cards.`;
+                toastType = 'warning';
+                break;
+            case 'draw_penalty':
+                message = `${getPlayerName(result.playerId)} drew ${result.drawnCount} cards and lost the turn.`;
+                toastType = 'warning';
+                break;
             case 'wild':
                 message = `${getPlayerName(result.playerId)} changed color to ${result.chosenColor}`;
                 toastType = 'info';
                 break;
             case 'wild_draw_four':
                 message = `${getPlayerName(result.playerId)} played +4!`;
+                toastType = 'warning';
+                break;
+            case 'wild_draw_four_stack':
+                message = `${getPlayerName(result.playerId)} stacked +4. Penalty is now ${result.penalty} cards.`;
                 toastType = 'warning';
                 break;
             case 'accept_draw_four':

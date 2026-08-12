@@ -502,8 +502,8 @@ class UIManager {
             if (state.awaitingDrawnCardDecision) {
                 this.turnMessage.textContent = 'Play the drawn card or pass';
                 this.turnMessage.className = 'turn-message highlight';
-            } else if (state.pendingDrawFour) {
-                this.turnMessage.textContent = 'Challenge or accept the +4?';
+            } else if (state.drawPenalty > 0) {
+                this.turnMessage.textContent = `Stack +2/+4 or draw ${state.drawPenalty} cards`;
                 this.turnMessage.className = 'turn-message highlight';
             } else {
                 this.turnMessage.textContent = 'Your turn — play a card or draw';
