@@ -172,6 +172,39 @@ body {
     visibility: visible;
 }
 
+.orientation-prompt {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 24px;
+    text-align: center;
+    color: #fff;
+    background: #0a0a1a;
+}
+
+.orientation-prompt.hidden {
+    display: none;
+}
+
+.orientation-icon {
+    font-size: 3rem;
+    line-height: 1;
+}
+
+.orientation-prompt strong {
+    font-size: 1.2rem;
+}
+
+.orientation-prompt span {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
 /* ----------------------------------------------------------
    Glass Card
    ---------------------------------------------------------- */
