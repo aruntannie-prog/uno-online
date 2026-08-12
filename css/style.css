@@ -1097,6 +1097,222 @@ body {
     }
 }
 
+/* ----------------------------------------------------------
+   PREMIUM TABLE PASS
+   ---------------------------------------------------------- */
+:root {
+    --bg-primary: #071318;
+    --bg-secondary: #0b2024;
+    --bg-surface: rgba(255, 255, 255, 0.055);
+    --bg-glass: rgba(10, 25, 30, 0.82);
+    --bg-glass-hover: rgba(16, 38, 43, 0.92);
+    --text-primary: #f7faf9;
+    --text-secondary: rgba(231, 244, 241, 0.68);
+    --text-muted: rgba(231, 244, 241, 0.4);
+    --accent-primary: #ff5d5d;
+    --accent-secondary: #35d0a1;
+    --accent-success: #35d0a1;
+    --accent-warning: #ffc857;
+    --border-subtle: rgba(218, 246, 239, 0.13);
+    --border-medium: rgba(218, 246, 239, 0.23);
+    --shadow-glow: 0 0 24px rgba(53, 208, 161, 0.18);
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 18px;
+}
+
+.particles-bg {
+    background: #071318;
+}
+
+.particles-bg::before,
+.particles-bg::after {
+    opacity: 0.25;
+}
+
+.glass-card {
+    background: rgba(9, 26, 31, 0.88);
+    border-color: rgba(218, 246, 239, 0.14);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+}
+
+.home-container,
+.lobby-container,
+.results-container {
+    width: min(92vw, 520px);
+}
+
+.home-form {
+    padding: 28px;
+    border-top: 2px solid rgba(255, 93, 93, 0.7);
+}
+
+.logo-title {
+    color: #ff5d5d;
+    text-shadow: 0 8px 30px rgba(255, 93, 93, 0.28);
+}
+
+.btn {
+    border-radius: 9px;
+    font-weight: 750;
+    letter-spacing: 0.1px;
+}
+
+.btn-primary {
+    background: #ff5d5d;
+    box-shadow: 0 8px 20px rgba(255, 93, 93, 0.22);
+}
+
+.btn-primary:hover {
+    background: #ff7474;
+    box-shadow: 0 10px 26px rgba(255, 93, 93, 0.3);
+}
+
+.btn-secondary {
+    background: #123e3d;
+    border-color: rgba(53, 208, 161, 0.28);
+}
+
+.lobby-header {
+    padding-bottom: 10px;
+}
+
+.room-code-display,
+.player-list-container {
+    border-radius: 12px;
+}
+
+.room-code-value {
+    color: #ffc857;
+    letter-spacing: 10px;
+    text-shadow: 0 0 18px rgba(255, 200, 87, 0.28);
+}
+
+#screen-game {
+    background: #071318;
+}
+
+#screen-game .game-header {
+    background: rgba(5, 16, 20, 0.92);
+    border-bottom: 1px solid rgba(218, 246, 239, 0.1);
+}
+
+#screen-game .opponents-area {
+    padding: 10px 16px 6px;
+}
+
+#screen-game .opponent-slot {
+    min-width: 82px;
+    padding: 7px 10px;
+    background: rgba(9, 31, 34, 0.86);
+    border-color: rgba(218, 246, 239, 0.1);
+    border-radius: 11px;
+}
+
+#screen-game .opponent-slot.active-turn {
+    border-color: #ffc857;
+    box-shadow: 0 0 0 1px rgba(255, 200, 87, 0.18), 0 0 20px rgba(255, 200, 87, 0.2);
+    animation: none;
+}
+
+#screen-game .opponent-name {
+    color: rgba(247, 250, 249, 0.84);
+    font-weight: 650;
+}
+
+#screen-game .play-area {
+    width: min(94vw, 920px);
+    align-self: center;
+    margin: 8px auto;
+    padding: clamp(14px, 3vh, 28px) 16px;
+    border: 1px solid rgba(92, 223, 177, 0.2);
+    border-radius: 26px;
+    background: #0c403a;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.035), inset 0 0 70px rgba(0, 0, 0, 0.22), 0 14px 38px rgba(0, 0, 0, 0.18);
+}
+
+#screen-game .pile-container {
+    gap: 18px;
+}
+
+#screen-game .current-color-indicator {
+    background: rgba(4, 28, 27, 0.46);
+    border-color: rgba(255, 255, 255, 0.16);
+    color: rgba(247, 250, 249, 0.78);
+}
+
+#screen-game .turn-message.highlight {
+    color: #fff1bd;
+    animation: none;
+}
+
+#screen-game .turn-timer {
+    background: rgba(4, 28, 27, 0.5);
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+#screen-game .action-buttons {
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 16px;
+}
+
+#screen-game .btn-action-draw {
+    background: #35a9d0;
+    border-radius: 9px;
+    box-shadow: 0 8px 18px rgba(53, 169, 208, 0.2);
+}
+
+#screen-game .btn-uno,
+#screen-game .btn-catch {
+    border-radius: 9px;
+    animation: none;
+}
+
+#screen-game .emoji-bar {
+    background: rgba(4, 22, 25, 0.92);
+    border-color: rgba(218, 246, 239, 0.18);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.24);
+}
+
+#screen-game .hand-area {
+    background: #061216;
+    border-top: 1px solid rgba(218, 246, 239, 0.12);
+    padding-top: 10px;
+}
+
+#screen-game .hand-scroll {
+    min-height: calc(var(--card-height) + 28px);
+}
+
+#screen-game .hand-scroll .card.playable {
+    box-shadow: 0 8px 20px rgba(255, 200, 87, 0.26);
+}
+
+@media (max-width: 600px) {
+    .home-form {
+        padding: 22px;
+    }
+
+    #screen-game .play-area {
+        width: calc(100vw - 18px);
+        margin: 5px 9px;
+        border-radius: 18px;
+        padding: 10px 12px;
+    }
+
+    #screen-game .opponents-area {
+        gap: 5px;
+        padding: 6px 8px 3px;
+    }
+
+    #screen-game .opponent-slot {
+        min-width: 70px;
+        padding: 5px 7px;
+    }
+}
+
 @media (max-width: 600px) {
     #screen-game .emoji-bar {
         top: 54px;
