@@ -902,72 +902,7 @@ body {
     border-radius: var(--radius-xl);
 }
 
-/* ----------------------------------------------------------
-   EMOJI REACTION SYSTEM
-   ---------------------------------------------------------- */
-.emoji-bar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 6px 14px;
-    background: rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(10px);
-    border-radius: 100px;
-    border: 1px solid var(--border-subtle);
-    margin: 2px 0;
-    max-width: 95%;
-    overflow-x: auto;
-    scrollbar-width: none;
-}
-
-.emoji-bar::-webkit-scrollbar {
-    display: none;
-}
-
-.emoji-btn {
-    background: transparent;
-    border: none;
-    font-size: 1.35rem;
-    cursor: pointer;
-    padding: 4px 6px;
-    border-radius: 50%;
-    transition: transform var(--transition-fast), background var(--transition-fast);
-    flex-shrink: 0;
-    line-height: 1;
-}
-
-.emoji-btn:hover {
-    transform: scale(1.35);
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.emoji-btn:active {
-    transform: scale(0.95);
-}
-
-/* Reactions live in a corner so they never change the board or hand alignment. */
-#screen-game .emoji-bar {
-    position: absolute;
-    top: 58px;
-    right: 10px;
-    z-index: 20;
-    display: grid;
-    grid-template-columns: repeat(5, 32px);
-    gap: 2px;
-    width: max-content;
-    max-width: none;
-    margin: 0;
-    padding: 4px;
-    border-radius: 12px;
-}
-
-#screen-game .emoji-btn {
-    padding: 4px;
-    font-size: 1.1rem;
-}
-
-/* Floating Emoji Animation */
+/* Floating reaction animation */
 .floating-emoji {
     position: absolute;
     font-size: 2.6rem;
@@ -1237,12 +1172,6 @@ body {
     animation: none;
 }
 
-#screen-game .emoji-bar {
-    background: rgba(4, 22, 25, 0.92);
-    border-color: rgba(218, 246, 239, 0.18);
-    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.24);
-}
-
 #screen-game .hand-area {
     background: #061216;
     border-top: 1px solid rgba(218, 246, 239, 0.12);
@@ -1277,14 +1206,6 @@ body {
     #screen-game .opponent-slot {
         min-width: 70px;
         padding: 5px 7px;
-    }
-}
-
-@media (max-width: 600px) {
-    #screen-game .emoji-bar {
-        top: 54px;
-        right: 6px;
-        grid-template-columns: repeat(2, 30px);
     }
 }
 
