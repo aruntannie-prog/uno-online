@@ -65,7 +65,6 @@ class UIManager {
 
         // Toast
         this.toastContainer = document.getElementById('toast-container');
-        this.orientationPrompt = document.getElementById('orientation-prompt');
 
         // Player color assignments
         this.playerColors = ['#8B5CF6', '#06B6D4', '#F59E0B', '#EF4444', '#22C55E', '#EC4899'];
@@ -89,8 +88,6 @@ class UIManager {
         this.onBackToLobby = null;
 
         this._setupEventListeners();
-        window.addEventListener('resize', () => this._updateOrientationPrompt());
-        window.addEventListener('orientationchange', () => this._updateOrientationPrompt());
     }
 
     // ----------------------------------------------------------
@@ -254,29 +251,6 @@ class UIManager {
             el.classList.toggle('active', name === screenName);
         }
 
-        if (screenName === 'game') {
-            this._requestLandscape();
-        } else {
-            this.orientationPrompt.classList.add('hidden');
-            if (screen.orientation?.unlock) screen.orientation.unlock();
-        }
-    }
-
-    _requestLandscape() {
-        const isMobile = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
-        if (!isMobile) return;
-
-        if (screen.orientation?.lock) {
-            screen.orientation.lock('landscape').catch(() => {});
-        }
-        this._updateOrientationPrompt();
-    }
-
-    _updateOrientationPrompt() {
-        const isMobile = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
-        const isGame = this.screens.game.classList.contains('active');
-        const portrait = window.matchMedia('(orientation: portrait)').matches;
-        this.orientationPrompt.classList.toggle('hidden', !(isMobile && isGame && portrait));
     }
 
     // ----------------------------------------------------------
